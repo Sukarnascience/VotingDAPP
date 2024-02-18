@@ -1,0 +1,116 @@
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    /*background-image: url('./blockchain_wallpaper.jpg');*/ /* Add your background image URL */
+    /*background-size: cover;*/
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+
+.container {
+    text-align: center;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    color: #333;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.party-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.party-button {
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-basis: calc(50% - 20px);
+    margin-bottom: 20px;
+}
+
+.party-a {
+    background: linear-gradient(45deg, #4CAF50, #2E8B57);
+}
+
+.party-b {
+    background: linear-gradient(45deg, #3498db, #4169E1);
+}
+
+.party-c {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+
+.party-d {
+    background: linear-gradient(45deg, #f39c12, #d35400);
+}
+
+.total-votes-button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.total-votes-button:hover,
+.party-button:hover {
+    background-color: #2c3e50;
+}
+
+.copyright {
+    margin-top: 20px;
+    color: #888;
+    font-size: 14px;
+}
+
+
+.party-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 30px 0;
+    position: relative;
+}
+
+.party-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: inherit;
+    filter: blur(10px);
+    opacity: 0.7;
+    z-index: -1;
+}
