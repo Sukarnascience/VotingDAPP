@@ -13,17 +13,33 @@
         <h1 class="title">Vote for Your Party<br>over Block-Chain &#127760;</h1>
         
         <div class="party-container">
-            <button onclick="voteForParty('Party A')" class="party-button party-a">Vote for Party A</button>
-            <button onclick="voteForParty('Party B')" class="party-button party-b">Vote for Party B</button>
-            <button onclick="voteForParty('Party C')" class="party-button party-c">Vote for Party C</button>
-            <button onclick="voteForParty('Party D')" class="party-button party-d">Vote for Party D</button>
+            <button onclick="voteForParty('PartyA')" class="party-button party-a">Vote for Party A</button>
+            <button onclick="voteForParty('PartyB')" class="party-button party-b">Vote for Party B</button>
+            <button onclick="voteForParty('PartyC')" class="party-button party-c">Vote for Party C</button>
+            <button onclick="voteForParty('PartyD')" class="party-button party-d">Vote for Party D</button>
         </div>
         
         <button onclick="getTotalVotes()" class="total-votes-button">Get Total Votes</button>
 
+        <div class="voting-details">
+            <h2>Voting Details</h2>
+            <div id="partyVotes">
+                <!-- Display votes for each party here -->
+            </div>
+            <p>Total Votes: <span id="totalVotes">0</span></p>
+        </div>
+
         <div class="copyright">
             &copy; Sukarna Jana 2024/25
         </div>
+    </div>
+
+    <div id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div id="notification" class="hidden">
+        <div class="notification-content"></div>
     </div>
 
     <script>
@@ -41,6 +57,11 @@
         // Contract ABI and address
         const abi = [
             {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "string",
@@ -52,11 +73,6 @@
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
-            },
-            {
-                "inputs": [],
-                "stateMutability": "nonpayable",
-                "type": "constructor"
             },
             {
                 "inputs": [],
@@ -129,37 +145,80 @@
                 "type": "function"
             }
         ];
+        const contractAddress = "0x0D4063c287165896F3370070A22D14bC87609fCF";
 
-
-        const contractAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138";
-
-        // Create contract instance
         const contract = new web3.eth.Contract(abi, contractAddress);
-
-        // Function to vote for a party
+        //showLoading();
+        showSystemNotification("Hi from DAPP");
+        Notification.requestPermission();
         async function voteForParty(party) {
             console.log(`Voting for ${party}`);
             try {
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 const account = accounts[0];
 
+                showLoading();
                 await contract.methods.voteForParty(party).send({ from: account });
-                alert(`You voted for ${party}`);
+                hideLoading();
+
+                showSystemNotification(`You voted for ${party}`);
             } catch (error) {
-                console.error('Error while voting:', error);
+                hideLoading();
+                showSystemNotification('Error while voting:', error);
+                console.error(`Error while getting total votes: ${error.message}`);
             }
         }
 
-        // Function to get total votes
         async function getTotalVotes() {
             console.log('Getting total votes');
             try {
+                showLoading();
                 const totalVotes = await contract.methods.getTotalVotes().call();
-                alert(`Total Votes for All Parties: ${totalVotes}`);
+                hideLoading();
+
+                // Display total votes
+                document.getElementById('totalVotes').innerText = totalVotes;
+
+                // Display votes for each party
+                const parties = ["PartyA", "PartyB", "PartyC", "PartyD"];
+                const partyVotesDiv = document.getElementById('partyVotes');
+                partyVotesDiv.innerHTML = '';
+                parties.forEach(async (party) => {
+                    const votesForParty = await contract.methods.getVotesForParty(party).call();
+                    partyVotesDiv.innerHTML += `<span>[ ${party}: ${votesForParty} ]</span> `;
+                });
+
+                showSystemNotification('Voting details updated');
             } catch (error) {
+                hideLoading();
                 console.error('Error while getting total votes:', error);
+
+                showSystemNotification(`Error while getting total votes: ${error.message}`);
             }
         }
+
+        function showLoading() {
+            const loadingElement = document.getElementById('loading');
+            loadingElement.style.display = 'block';
+        }
+
+        function hideLoading() {
+            const loadingElement = document.getElementById('loading');
+            loadingElement.style.display = 'none';
+        }
+
+        function showSystemNotification(message) {
+            if (Notification.permission === 'granted') {
+                new Notification(message);
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification(message);
+                    }
+                });
+            }
+        }
+
     </script>
 </body>
 </html>
